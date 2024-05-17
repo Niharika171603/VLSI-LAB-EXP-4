@@ -1,13 +1,15 @@
 # VLSI-LAB-EXP-4
+
 SIMULATION AND IMPLEMENTATION OF SEQUENTIAL LOGIC CIRCUITS
 
 AIM: 
+
  To simulate and synthesis SR, JK, T, D - FLIPFLOP, COUNTER DESIGN using Xilinx ISE.
 
 APPARATUS REQUIRED:
 
-Xilinx 14.7
-Spartan6 FPGA
+               Xilinx 14.7
+               Spartan6 FPGA
 
 **LOGIC DIAGRAM**
 
@@ -37,25 +39,304 @@ COUNTER
 
   
 PROCEDURE:
+
 STEP:1  Start  the Xilinx navigator, Select and Name the New project.
+
 STEP:2  Select the device family, device, package and speed.       
+
 STEP:3  Select new source in the New Project and select Verilog Module as the Source type.                       
+
 STEP:4  Type the File Name and Click Next and then finish button. Type the code and save it.
+
 STEP:5  Select the Behavioral Simulation in the Source Window and click the check syntax.                       
+
 STEP:6  Click the simulation to simulate the program and  give the inputs and verify the outputs as per the truth table.               
+
 STEP:7  Select the Implementation in the Sources Window and select the required file in the Processes Window.
+
 STEP:8  Select Check Syntax from the Synthesize  XST Process. Double Click in the  FloorplanArea/IO/Logic-Post Synthesis process in the User Constraints process group. UCF(User constraint File) is obtained. 
+
 STEP:9  In the Design Object List Window, enter the pin location for each pin in the Loc column Select save from the File menu.
+
 STEP:10 Double click on the Implement Design and double click on the Generate Programming File to create a bitstream of the design.(.v) file is converted into .bit file here.
+
 STEP:11  On the board, by giving required input, the LEDs starts to glow light, indicating the output.
 
 VERILOG CODE
 
-   <<< TYPE YOUR VERILOG CODE >>>
+  SR FLIPFLOP:
+  
+module srff(clk,j,k,rst,q );
+
+input s,r,clk,rst;
+
+output reg q;
+
+always@(posedge clk)
+
+begin
+
+if(rst==1)
+
+q=1'b0;
+
+else
+
+begin
+
+case({s,r})
+
+2'b00: q=q;
+
+2'b01:q=1'b0;
+
+2'b10:q=1'b1;
+
+2'b11:q=1'bx;
+
+endcase
+
+end
+
+end
+
+endmodule
+
+JK FLIPFLOP:
+
+module jkff(clk,j,k,rst,q );
+
+input j,k,clk,rst;
+
+output reg q;
+
+always@(posedge clk)
+
+begin
+
+if(rst==1)
+
+q=1'b0;
+
+else
+
+begin
+
+case({j,k})
+
+2'b00: q=q;
+
+2'b01:q=1'b0;
+
+2'b10:q=1'b1;
+
+2'b11:q=~q;
+
+endcase
+
+end
+
+end
+
+endmodule
+
+T FLIPFLOP:
+
+module tff(clk,reset,t,q);
+
+input clk,reset,t;
+
+output reg q;
+
+always @(posedge clk)
+
+begin
+
+if(reset==1)
+
+q=0;
+
+else
+
+begin
+
+if(t==0)
+
+q=q;
+
+else
+
+q=~q;
+
+end
+
+end
+
+endmodule
+
+D FLIPFLOP:
+
+module dff(clk,d,rst,q );
+
+input d,clk,rst;
+
+output reg q;
+
+always@(posedge clk)
+
+begin
+
+if(rst==1)
+
+q=1'b0;
+
+else
+
+q=d;
+
+end
+
+endmodule
+
+UPDOWN COUNTER:
+
+module updown(clk,rst,up_down,count);
+
+input clk,rst,up_down;
+
+output reg[3:0]count;
+
+always@(posedge clk)
+
+begin
+
+if(rst==1)
+
+count <= 4'b0000;
+
+else if (up_down == 1'b1)
+
+count <= count + 1'b1;
+
+else
+
+count <= count-1'b1;
+
+end
+
+endmodule
+
+MOD 10 COUNTER:
+
+module mod(clk,rst,count);
+
+input clk,rst;
+
+output reg[3:0]count;
+
+always @(posedge clk)
+
+begin
+
+if(rst==1 | count==4'b1001)
+
+count <= 4'b0000;
+
+else
+
+count <= count +1;
+
+end
+
+endmodule
+
+RIPPLE COUNTER:
+
+module ripplecounter(clk,rst,q);
+
+input clk,rst;
+
+output [3:0]q;
+
+tff tff1(q[0],clk,rst);
+
+tff tff2(q[1],q[0],rst);
+
+tff tff3(q[2],q[1],rst);
+
+tff tff4(q[3],q[2],rst);
+
+endmodule
+
+module tff(q,clk,rst);
+
+input clk,rst;
+
+output q;
+
+wire d;
+
+dff df1(q,d,clk,rst);
+
+not n1(d,q);
+
+endmodule
+
+module dff(q,d,clk,rst);
+
+input d,clk,rst;
+
+output q;
+
+reg q;
+
+always@(posedge clk or posedge rst)
+
+begin
+
+if(rst)
+
+q=1'b10;
+
+else
+
+q=d;
+
+end
+
+endmodule
 
 OUTPUT WAVEFORM
- <<< PASTE YOUR OUTPUT WAVEFORM >>>
+
+ SR flipflop:
+
+ ![image](https://github.com/Niharika171603/VLSI-LAB-EXP-4/assets/161016278/794d7efb-75a5-4550-8cf2-0d4c90d30ede)
+
+JK flipflop:
+
+![image](https://github.com/Niharika171603/VLSI-LAB-EXP-4/assets/161016278/b8c18251-9dee-4780-831c-ca969e53cf1e)
+
+T flipflop:
+
+![image](https://github.com/Niharika171603/VLSI-LAB-EXP-4/assets/161016278/2b528478-bc1e-40a5-bf03-9ee9b91a638e)
+
+D flipflop:
+
+![image](https://github.com/Niharika171603/VLSI-LAB-EXP-4/assets/161016278/a48cedac-1533-4915-bf65-a4e9fc4ac3fc)
+
+Updown counter:
+
+![image](https://github.com/Niharika171603/VLSI-LAB-EXP-4/assets/161016278/50b36651-2cfe-46d6-9280-5f57c12128c8)
+
+Mod 10 counter:
+
+![image](https://github.com/Niharika171603/VLSI-LAB-EXP-4/assets/161016278/1d16f9f8-273b-4a2f-9062-3f26126143d6)
+
+Ripple counter:
+
+![image](https://github.com/Niharika171603/VLSI-LAB-EXP-4/assets/161016278/93dc819b-dd5e-4241-8840-026ce70b1ca3)
 
 RESULT
 
+    Thus,the simulation and synthesis of SR,JK,T,D flipflops,counters by using vivado has been successfully excecuted and verified.
 
